@@ -77,6 +77,7 @@ lk1 = frequent itemset of length k
 lk2 = candidates for length k=1
 """
 
+
 def gen_cand(lk1):
     lk = cp.deepcopy(lk1)
     n = len(lk)
@@ -130,11 +131,11 @@ freq_set = frequent itemset which have frequency greater than support
 """
 
 def apriori(filename,support=0.35):
-    freq_set = []
+    freq_set = {}
     cand1,n = candidate1('GroceryStoreDataSet.csv')
     l1 = freq(cand1,n,support)
     for i in l1:
-        freq_set.append(frozenset({i}))
+        freq_set[frozenset({i})]=cand1[i]
     c2 = findsubsets(l1,2)
     while len(c2)!=0:
         cand = get_candidate(filename,c2)
@@ -142,7 +143,7 @@ def apriori(filename,support=0.35):
         if len(l2)==0:
             break
         for i in l2:
-            freq_set.append(i)
+            freq_set[i]=cand[i]
         c2 = gen_cand(l2)
     return freq_set
 
@@ -151,6 +152,7 @@ freq_set : a dictionary conatining frequent set with corresponding freq
 confidence : confidence value
 Rule : dictionary giving association rules
 """
+
 
 def rules(freq_set,confidence=0.56):
     Rule = {}
@@ -164,7 +166,6 @@ def rules(freq_set,confidence=0.56):
                 if freq_set[key]/freq_set[key-frozenset(j)]>=confidence:
                     Rule[key-frozenset(j)]=frozenset(j)
     return Rule
-
 
 """
 Main Function
